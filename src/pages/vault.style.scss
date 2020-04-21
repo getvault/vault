@@ -1,0 +1,71 @@
+$height: 3rem;
+
+$width: 900px;
+
+.main {
+  max-width: $width;
+  padding: 1rem;
+  margin: auto;
+  margin-top: $height;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $height;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 1rem 2rem;
+
+  .headerLeft,
+  .headerRight {
+    flex: 1 1 auto;
+
+    @media screen and (max-width: 992px) {
+      flex: 0 0 auto;
+    }
+  }
+
+  .headerRight {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    .button {
+      font-size: 1.4rem;
+      margin-right: 0.5rem;
+    }
+  }
+
+  .search {
+    border: 0;
+    outline: none;
+
+    flex: 0 0 $width;
+
+    @media screen and (max-width: 992px) {
+      flex: 1 1 auto;
+    }
+  }
+}
+
+.panel {
+  $radius: 4px;
+
+  &:first-child {
+    border-top-left-radius: $radius;
+    border-top-right-radius: $radius;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: $radius;
+    border-bottom-right-radius: $radius;
+  }
+
+  &:not(:last-child) {
+    border-bottom: 0;
+  }
+}

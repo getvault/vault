@@ -29,3 +29,12 @@
 
 - facebook: http://www.magicprog.fr/article-7-les-balises-meta-pour-facebook
 - all: https://www.skyminds.net/les-balises-meta-indispensables-pour-les-reseaux-sociaux-facebook-twitter-goog
+
+## Redux
+
+- [Gatsby redux](https://www.gatsbyjs.org/packages/gatsby-plugin-react-redux/)
+- [Redux saga](https://github.com/redux-saga/redux-saga)
+
+## Animations
+
+- https://github.com/react-spring/react-use-gesture
