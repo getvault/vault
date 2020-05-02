@@ -34,6 +34,7 @@
 
 - [Gatsby redux](https://www.gatsbyjs.org/packages/gatsby-plugin-react-redux/)
 - [Redux saga](https://github.com/redux-saga/redux-saga)
+- [ReduxToolkit async function](https://redux-toolkit.js.org/api/createAsyncThunk)
 
 ## Animations
 

@@ -18,11 +18,11 @@ import {
   DELETE_TIMEOUT,
 } from '~state/secrets'
 
-import style from './Panel.style'
+import style from './Secret.style'
 
 const cx = classNames.bind(style)
 
-const Panel = ({ className, secret, onLastAdded, open }) => {
+const Secret = ({ className, secret, onLastAdded, open }) => {
   const { id } = secret
 
   const [label, setLabel] = useState(secret.label)
@@ -52,7 +52,7 @@ const Panel = ({ className, secret, onLastAdded, open }) => {
   const onLabelChange = event => {
     const newLabel = event.target.value
     setLabel(newLabel)
-    dispatch(updateSecret(id, { label: newLabel }))
+    dispatch(updateSecret({ id, label: newLabel }))
   }
 
   const onTab = event => {
@@ -71,14 +71,14 @@ const Panel = ({ className, secret, onLastAdded, open }) => {
   const onValueChange = event => {
     const newValue = event.target.value
     setValue(newValue)
-    dispatch(updateSecret(id, { value: newValue }))
+    dispatch(updateSecret({ id, value: newValue }))
   }
 
   const onGeneratePassword = () => {
     const newValue = `${value}${generatePassword()}`
     setValue(newValue)
 
-    dispatch(updateSecret(id, { value: newValue }))
+    dispatch(updateSecret({ id, value: newValue }))
   }
 
   const onDelete = () => {
@@ -108,7 +108,7 @@ const Panel = ({ className, secret, onLastAdded, open }) => {
   }
 
   const onExpirationDateChange = (date, dateString) =>
-    dispatch(updateSecret(id, { expirationDate: dateString }))
+    dispatch(updateSecret({ id, expirationDate: dateString }))
 
   /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions  */
   return (
@@ -135,6 +135,7 @@ const Panel = ({ className, secret, onLastAdded, open }) => {
           <BasicButton
             onClick={onDelete}
             className={cx('delete', { expanded })}
+            aria-label="Delete secret"
           >
             <Tooltip title="Delete" placement="bottom">
               <DeleteOutlined />
@@ -181,14 +182,14 @@ const Panel = ({ className, secret, onLastAdded, open }) => {
   )
 }
 
-Panel.defaultProps = {
+Secret.defaultProps = {
   secret: { id: '', value: '', label: '', expirationDate: '' },
   className: '',
   onLastAdded: () => {},
   open: false,
 }
 
-Panel.propTypes = {
+Secret.propTypes = {
   secret: PropTypes.shape({
     id: PropTypes.string,
     label: PropTypes.string,
@@ -200,4 +201,4 @@ Panel.propTypes = {
   open: PropTypes.bool,
 }
 
-export default Panel
+export default Secret

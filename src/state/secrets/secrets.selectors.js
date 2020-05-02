@@ -1,5 +1,5 @@
 export const getSecrets = state =>
-  state.secrets.order
+  state.secrets.ordered
     .map(id => state.secrets.byId[id])
     .filter(secret => !secret.isDeleting)
 

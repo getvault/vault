@@ -25,13 +25,19 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['config/**/*', '*.spec.js'],
+      files: ['config/**/*', '*.spec.js', '**/__test__/**/*.js'],
       rules: {
         'import/no-extraneous-dependencies': [
           'error',
           { devDependencies: true },
         ],
         'no-underscore-dangle': 'off',
+      },
+    },
+    {
+      files: ['**/*.reducer.js'],
+      rules: {
+        'no-param-reassign': 'off',
       },
     },
   ],
@@ -48,8 +54,8 @@ module.exports = {
           ['~pages', './src/pages'],
           ['~state', './src/state'],
           ['~utils', './src/utils'],
+          ['__test__', './__test__'],
         ],
-
         extensions: ['.ts', '.js', '.jsx', '.json', '.scss', '.svg'],
       },
     },

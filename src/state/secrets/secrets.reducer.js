@@ -1,8 +1,9 @@
-import { v4 as uuidv4 } from 'uuid'
+import { createReducer } from '@reduxjs/toolkit'
+import remove from 'lodash/remove'
 
 import {
-  ADD_SECRET,
-  UPDATE_SECRET,
+  addSecret,
+  updateSecret,
   DELETE_SECRET_START,
   DELETE_SECRET_CANCEL,
   DELETE_SECRET_CONFIRM,
@@ -10,91 +11,128 @@ import {
 
 export const initState = {
   byId: {},
-  order: [],
+  ordered: [],
   saving: false,
 }
 
-export default (state = initState, action) => {
-  switch (action.type) {
-    case ADD_SECRET: {
-      const id = uuidv4()
-
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [id]: {
-            id,
-            label: '',
-            value: '',
-            expirationDate: '',
-          },
-        },
-        order: [...state.order, id],
-      }
+export default createReducer(initState, {
+  [addSecret]: (state, { payload: id }) => {
+    state.byId[id] = {
+      id,
+      label: '',
+      value: '',
+      expirationDate: '',
     }
-
-    case UPDATE_SECRET: {
-      const { id, toUpdate } = action
-
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [id]: {
-            ...state.byId[id],
-            ...toUpdate,
-          },
-        },
-      }
+    state.ordered.push(id)
+  },
+  [updateSecret]: (state, action) => {
+    const { id, ...toUpdate } = action.payload
+    state.byId[id] = {
+      ...state.byId[id],
+      ...toUpdate,
     }
+  },
+  [DELETE_SECRET_START]: (state, action) => {
+    const id = action.payload
 
-    case DELETE_SECRET_START: {
-      const { id } = action
+    state.byId[id].isDeleting = true
+  },
+  [DELETE_SECRET_CANCEL]: (state, action) => {
+    const id = action.payload
 
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [id]: {
-            ...state.byId[id],
-            isDeleting: true,
-          },
-        },
-      }
+    state.byId[id].isDeleting = false
+  },
+  [DELETE_SECRET_CONFIRM]: (state, action) => {
+    const id = action.payload
+
+    if (state.byId[id].isDeleting) {
+      delete state.byId[id]
+      remove(state.ordered, i => i === id)
     }
+  },
+})
 
-    case DELETE_SECRET_CANCEL: {
-      const { id } = action
+// export default (state = initState, action) => {
+//   switch (action.type) {
+//     case ADD_SECRET: {
+//       const id = uuidv4()
 
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [id]: {
-            ...state.byId[id],
-            isDeleting: false,
-          },
-        },
-      }
-    }
+//       return {
+//         ...state,
+//         byId: {
+//           ...state.byId,
+//           [id]: {
+//             id,
+//             label: '',
+//             value: '',
+//             expirationDate: '',
+//           },
+//         },
+//         ordered: [...state.ordered, id],
+//       }
+//     }
 
-    case DELETE_SECRET_CONFIRM: {
-      if (!state.byId[action.id].isDeleting) {
-        return state
-      }
+//     case UPDATE_SECRET: {
+//       const { id, toUpdate } = action
 
-      const { byId } = state
-      delete byId[action.id]
+//       return {
+//         ...state,
+//         byId: {
+//           ...state.byId,
+//           [id]: {
+//             ...state.byId[id],
+//             ...toUpdate,
+//           },
+//         },
+//       }
+//     }
 
-      return {
-        ...state,
-        byId,
-        order: state.order.filter(id => id !== action.id),
-      }
-    }
+//     case DELETE_SECRET_START: {
+//       const { id } = action
 
-    default:
-      return state
-  }
-}
+//       return {
+//         ...state,
+//         byId: {
+//           ...state.byId,
+//           [id]: {
+//             ...state.byId[id],
+//             isDeleting: true,
+//           },
+//         },
+//       }
+//     }
+
+//     case DELETE_SECRET_CANCEL: {
+//       const { id } = action
+
+//       return {
+//         ...state,
+//         byId: {
+//           ...state.byId,
+//           [id]: {
+//             ...state.byId[id],
+//             isDeleting: false,
+//           },
+//         },
+//       }
+//     }
+
+//     case DELETE_SECRET_CONFIRM: {
+//       if (!state.byId[action.id].isDeleting) {
+//         return state
+//       }
+
+//       const { byId } = state
+//       delete byId[action.id]
+
+//       return {
+//         ...state,
+//         byId,
+//         ordered: state.ordered.filter(id => id !== action.id),
+//       }
+//     }
+
+//     default:
+//       return state
+//   }
+// }

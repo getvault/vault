@@ -2,12 +2,12 @@ import React, { useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Empty, BackTop } from 'antd'
 
-import Panel from '~components/molecules/Panel'
+import Secret from '~components/molecules/Secret'
 import Header from '~components/molecules/Header'
 
 import { getSecrets, addSecret } from '~state/secrets'
 
-import style from './vault.style'
+import style from './Vault.style'
 
 export default () => {
   const [query, setQuery] = useState('')
@@ -30,31 +30,31 @@ export default () => {
     setOpenFirst(false)
   }
 
-  const onSubmit = () => {
-    setOpenFirst(!openFirst)
-  }
+  const onSubmit = () => setOpenFirst(!openFirst)
 
   const containsQuery = secret =>
     secret.label.toLowerCase().includes(query.toLowerCase()) ||
     secret.value.toLowerCase().includes(query.toLowerCase())
 
-  const filtered = secrets.filter(containsQuery)
+  const searchedSecrets = secrets.filter(containsQuery)
 
   return (
     <>
       <BackTop />
-      <Header onAdd={onAdd} onQueryChange={onQueryChange} onSubmit={onSubmit} />
       <div className={style.main}>
-        {filtered.length === 0 ? (
+        <Header
+          onAdd={onAdd}
+          onQueryChange={onQueryChange}
+          onSubmit={onSubmit}
+        />
+        {searchedSecrets.length === 0 ? (
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description={
-              <span>No {query ? 'corresponding ' : ''}passwords</span>
-            }
+            description={<span>No {query ? 'corresponding ' : ''}secrets</span>}
           />
         ) : (
-          filtered.map((secret, index) => (
-            <Panel
+          searchedSecrets.map((secret, index) => (
+            <Secret
               className={style.panel}
               key={secret.id}
               secret={secret}

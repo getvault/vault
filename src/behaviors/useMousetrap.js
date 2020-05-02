@@ -7,5 +7,5 @@ export default (key, callback) =>
   useEffect(() => {
     Mousetrap.bind(key, callback)
 
-    return () => Mousetrap.bind(key)
+    return () => Mousetrap.unbind(key)
   }, [])

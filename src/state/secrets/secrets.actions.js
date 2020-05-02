@@ -1,27 +1,25 @@
 import { put, takeEvery } from 'redux-saga/effects'
+import { createAction } from '@reduxjs/toolkit'
+import { v4 as uuidv4 } from 'uuid'
 
-export const ADD_SECRET = 'ADD_SECRET'
-export const addSecret = () => ({
-  type: ADD_SECRET,
-})
+export const addSecret = createAction('secret/add', () => ({
+  payload: uuidv4(),
+}))
 
-export const UPDATE_SECRET = 'UPDATE_SECRET'
-export const updateSecret = (id, toUpdate) => ({
-  type: UPDATE_SECRET,
-  id,
-  toUpdate,
-})
+export const updateSecret = createAction('secret/update')
+
+// https://redux-toolkit.js.org/tutorials/advanced-tutorial
 
 export const DELETE_SECRET_START = 'DELETE_SECRET_START'
 export const deleteSecret = id => ({
   type: DELETE_SECRET_START,
-  id,
+  payload: id,
 })
 
 export const DELETE_SECRET_CANCEL = 'DELETE_SECRET_CANCEL'
 export const cancelDeleteSecret = id => ({
   type: DELETE_SECRET_CANCEL,
-  id,
+  payload: id,
 })
 
 export const DELETE_TIMEOUT = 3000
@@ -31,7 +29,7 @@ function* confirmDeleteSecret(action) {
   yield new Promise(resolve => setTimeout(resolve, DELETE_TIMEOUT))
   yield put({
     type: DELETE_SECRET_CONFIRM,
-    id: action.id,
+    payload: action.id,
   })
 }
 

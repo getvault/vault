@@ -1,57 +1,39 @@
-$height: 3rem;
-
-$width: 900px;
-
 .Header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: $height;
+  padding: 0.5rem 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 1rem 2rem;
 
-  .headerLeft,
-  .headerRight {
-    flex: 1 1;
-
-    @media screen and (max-width: 992px) {
-      flex: 0 0 auto;
-    }
+  .spacer {
+    flex: 1 1 auto;
   }
 
-  .headerRight {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-
-    .button {
-      font-size: 1rem;
-      margin-right: 0.8rem;
-      display: block;
-    }
-  }
-
-  .headerCenter {
-    padding: 0 1rem;
-
-    flex: 0 0 $width;
-
-    @media screen and (max-width: 992px) {
-      flex: 1 1 auto;
-      padding: 0;
-    }
+  @media screen and (max-width: 992px) {
+    flex: 1 1 auto;
+    padding: 0;
   }
 
   .search {
     border: 0;
     outline: none;
-    width: 100%;
+    width: 40px;
+    margin-right: 10px;
+
+    &.expanded {
+      width: 300px;
+    }
   }
 }
 
 .link {
   text-align: right;
+}
+
+.avatar {
+  cursor: pointer;
 }
