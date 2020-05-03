@@ -113,7 +113,7 @@ const Secret = ({ className, secret, onLastAdded, open }) => {
   /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions  */
   return (
     <div className={`${style.Panel} ${className}`}>
-      <div className={style.header} onClick={() => expand(!expanded)}>
+      <div className={style.header}>
         <ContentEditable
           html={label}
           onKeyDown={onTab}

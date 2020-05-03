@@ -1,0 +1,12 @@
+.list {
+  position: relative;
+}
+
+.item {
+  position: absolute;
+  width: 100%;
+
+  overflow: visible;
+  pointer-events: auto;
+  transform-origin: 50% 50% 0px;
+}

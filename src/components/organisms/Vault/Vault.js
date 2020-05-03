@@ -4,6 +4,7 @@ import { Empty, BackTop } from 'antd'
 
 import Secret from '~components/molecules/Secret'
 import Header from '~components/molecules/Header'
+import DraggableList from '~components/atoms/DraggableList'
 
 import { getSecrets, addSecret } from '~state/secrets'
 
@@ -19,10 +20,10 @@ export default () => {
 
   const onAdd = () => {
     dispatch(addSecret())
-    setTimeout(() => {
-      ref.current.focus()
-      ref.current.scrollTo()
-    }, 400)
+    //   setTimeout(() => {
+    //     ref.current.focus()
+    //     ref.current.scrollTo()
+    //   }, 400)
   }
 
   const onQueryChange = value => {
@@ -36,7 +37,19 @@ export default () => {
     secret.label.toLowerCase().includes(query.toLowerCase()) ||
     secret.value.toLowerCase().includes(query.toLowerCase())
 
-  const searchedSecrets = secrets.filter(containsQuery)
+  const foundSecrets = secrets.filter(containsQuery).map((secret, index) => (
+    <Secret
+      className={style.panel}
+      key={secret.id}
+      secret={secret}
+      open={openFirst && index === 0}
+      onLastAdded={r => {
+        ref.current = r.current
+      }}
+    />
+  ))
+
+  // const items = secrets.map(secret => <div>{secret.value}</div>)
 
   return (
     <>
@@ -47,24 +60,21 @@ export default () => {
           onQueryChange={onQueryChange}
           onSubmit={onSubmit}
         />
-        {searchedSecrets.length === 0 ? (
-          <Empty
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            description={<span>No {query ? 'corresponding ' : ''}secrets</span>}
-          />
-        ) : (
-          searchedSecrets.map((secret, index) => (
-            <Secret
-              className={style.panel}
-              key={secret.id}
-              secret={secret}
-              open={openFirst && index === 0}
-              onLastAdded={r => {
-                ref.current = r.current
-              }}
+        <div className={style.list}>
+          {foundSecrets.length === 0 ? (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description={
+                <span>No {query ? 'corresponding ' : ''}secrets</span>
+              }
             />
-          ))
-        )}
+          ) : (
+            foundSecrets
+          )}
+        </div>
+        <div className={style.list}>
+          <DraggableList items={'1 2 3'.split(' ')} />
+        </div>
       </div>
     </>
   )
