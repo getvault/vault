@@ -72,9 +72,6 @@ export default () => {
             foundSecrets
           )}
         </div>
-        <div className={style.list}>
-          <DraggableList items={'1 2 3'.split(' ')} />
-        </div>
       </div>
     </>
   )

@@ -5,7 +5,12 @@ import AnimateHeight from 'react-animate-height'
 import TextareaAutosize from 'react-textarea-autosize'
 import ContentEditable from 'react-contenteditable'
 import { Tooltip, Button, DatePicker, notification } from 'antd'
-import { RightOutlined, DeleteOutlined, WarningFilled } from '@ant-design/icons'
+import {
+  RightOutlined,
+  DeleteOutlined,
+  WarningFilled,
+  MoreOutlined,
+} from '@ant-design/icons'
 import classNames from 'classnames/bind'
 import moment from 'moment'
 
@@ -28,6 +33,7 @@ const Secret = ({ className, secret, onLastAdded, open }) => {
   const [label, setLabel] = useState(secret.label)
   const [value, setValue] = useState(secret.value)
   const [expanded, expand] = useState(false)
+  const [hover, setHover] = useState(false)
 
   const dispatch = useDispatch()
 
@@ -35,10 +41,10 @@ const Secret = ({ className, secret, onLastAdded, open }) => {
   const valueRef = useRef()
 
   useEffect(() => {
-    if (label === '' && value === '') {
-      setTimeout(() => expand(true), 10)
-      onLastAdded(labelRef)
-    }
+    // if (label === '' && value === '') {
+    //   setTimeout(() => expand(true), 10)
+    //   onLastAdded(labelRef)
+    // }
   }, [])
 
   useEffect(() => {
@@ -112,46 +118,66 @@ const Secret = ({ className, secret, onLastAdded, open }) => {
 
   /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions  */
   return (
-    <div className={`${style.Panel} ${className}`}>
+    <div
+      className={`${style.Panel} ${className}`}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
       <div className={style.header}>
-        <ContentEditable
-          html={label}
-          onKeyDown={onTab}
-          onChange={onLabelChange}
-          onClick={e => e.stopPropagation()}
-          className={style.label}
-          innerRef={labelRef}
-        />
-        <div className={style.actions}>
-          {secret.expirationDate !== '' &&
-          moment().isAfter(secret.expirationDate) ? (
-            <div className={style.expired}>
-              <Tooltip title="Password expired" placement="bottom">
-                <WarningFilled />
+        <div className={cx('draggable', { hover })}>
+          <MoreOutlined className={style.dragIcon} />
+          <MoreOutlined className={style.dragIcon} />
+        </div>
+        <div
+          className={style.notDraggable}
+          onMouseDown={event => event.stopPropagation()}
+          onClick={() => {
+            console.log('toggle')
+            expand(!expanded)
+          }}
+        >
+          <ContentEditable
+            html={label}
+            onKeyDown={onTab}
+            onChange={onLabelChange}
+            onClick={e => e.stopPropagation()}
+            className={style.label}
+            innerRef={labelRef}
+          />
+          <div className={style.actions}>
+            {secret.expirationDate !== '' &&
+            moment().isAfter(secret.expirationDate) ? (
+              <div className={style.expired}>
+                <Tooltip title="Password expired" placement="bottom">
+                  <WarningFilled />
+                </Tooltip>
+              </div>
+            ) : null}
+
+            <BasicButton
+              onClick={onDelete}
+              className={cx('delete', { expanded })}
+              aria-label="Delete secret"
+            >
+              <Tooltip title="Delete" placement="bottom">
+                <DeleteOutlined />
               </Tooltip>
-            </div>
-          ) : null}
+            </BasicButton>
 
-          <BasicButton
-            onClick={onDelete}
-            className={cx('delete', { expanded })}
-            aria-label="Delete secret"
-          >
-            <Tooltip title="Delete" placement="bottom">
-              <DeleteOutlined />
+            <Tooltip title={expanded ? 'Reduce' : 'Expand'} placement="bottom">
+              <RightOutlined
+                size="small"
+                className={cx('expand', { expanded })}
+              />
             </Tooltip>
-          </BasicButton>
-
-          <Tooltip title={expanded ? 'Reduce' : 'Expand'} placement="bottom">
-            <RightOutlined
-              size="small"
-              className={cx('expand', { expanded })}
-            />
-          </Tooltip>
+          </div>
         </div>
       </div>
       <AnimateHeight duration={200} height={expanded ? 'auto' : 0}>
-        <div className={style.content}>
+        <div
+          className={style.content}
+          onMouseDown={event => event.stopPropagation()}
+        >
           <TextareaAutosize
             className={style.textarea}
             placeholder="Secret"

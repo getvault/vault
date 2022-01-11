@@ -1,7 +1,7 @@
 // Original: https://github.com/chenglou/react-motion/tree/master/demos/demo8-draggable-list
 // https://codesandbox.io/embed/r5qmj8m6lq
-// https://codesandbox.io/s/fh8r8
-import React, { useRef } from 'react'
+// https://codesandbox.io/s/fh8r8 latest version
+import React, { useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import clamp from 'lodash/clamp'
 import swap from 'lodash-move'
@@ -10,27 +10,25 @@ import { useSprings, animated, interpolate } from 'react-spring'
 
 import style from './DraggableList.style'
 
-const height = 100
+const DraggableList = ({ items, height }) => {
+  // Returns fitting styles for dragged/idle items
+  const fn = (order, down, originalIndex, curIndex, y) => index =>
+    down && index === originalIndex
+      ? {
+          y: curIndex * height + y,
+          scale: 1.1,
+          zIndex: '1',
+          shadow: 15,
+          immediate: n => n === 'y' || n === 'zIndex',
+        }
+      : {
+          y: order.indexOf(index) * height,
+          scale: 1,
+          zIndex: '0',
+          shadow: 1,
+          immediate: false,
+        }
 
-// Returns fitting styles for dragged/idle items
-const fn = (order, down, originalIndex, curIndex, y) => index =>
-  down && index === originalIndex
-    ? {
-        y: curIndex * height + y,
-        scale: 1.1,
-        zIndex: '1',
-        shadow: 15,
-        immediate: n => n === 'y' || n === 'zIndex',
-      }
-    : {
-        y: order.indexOf(index) * height,
-        scale: 1,
-        zIndex: '0',
-        shadow: 1,
-        immediate: false,
-      }
-
-const DraggableList = ({ items }) => {
   const order = useRef(items.map((_, index) => index)) // Store indicies as a local ref, this represents the item order
   const [springs, setSprings] = useSprings(items.length, fn(order.current)) // Create springs, each corresponds to an item, controlling its transform, scale, etc.
   const bind = useDrag(({ args: [originalIndex], down, movement: [, y] }) => {
@@ -44,6 +42,14 @@ const DraggableList = ({ items }) => {
     setSprings(fn(newOrder, down, originalIndex, curIndex, y)) // Feed springs new style data, they'll animate the view without causing a single render
     if (!down) order.current = newOrder
   })
+
+  useEffect(() => {
+    if (items.length !== order.current.length) {
+      order.current = [...order.current, items.length - 1]
+      setSprings(fn(order.current)) // Feed springs new style data, they'll animate the view without causing a single render
+    }
+  }, [items.length])
+
   return (
     <div className={style.list} style={{ height: height * items.length }}>
       {springs.map(({ zIndex, shadow, y, scale }, i) => {
@@ -61,7 +67,7 @@ const DraggableList = ({ items }) => {
               ),
               transform: interpolate(
                 [y, scale],
-                (y1, s) => `translate3d(0,${y1}px,0) scale(${s})`
+                (y1, s) => `translate3d(0,${y1}px,0)`
               ),
             }}
           >
@@ -75,10 +81,12 @@ const DraggableList = ({ items }) => {
 
 DraggableList.propTypes = {
   items: PropTypes.arrayOf(PropTypes.node),
+  height: PropTypes.number,
 }
 
 DraggableList.defaultProps = {
   items: [],
+  height: 100,
 }
 
 export default DraggableList
