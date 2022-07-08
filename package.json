@@ -27,7 +27,7 @@
     "lodash": "^4.17.15",
     "lodash-es": "^4.17.15",
     "lodash-move": "^1.1.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "mousetrap": "^1.6.5",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
